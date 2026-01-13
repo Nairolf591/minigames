@@ -1,0 +1,12 @@
+name: Minigames
+version: 1.0
+main: fr.minigames.Main
+api-version: 1.21
+authors: [Nairolf591]
+description: Un plugin de mini-jeux avec Manhunt et Loup-Garou.
+
+commands:
+  menu:
+    description: Ouvre le menu de sélection des jeux
+    usage: /menu
+    aliases: [m, jeux]

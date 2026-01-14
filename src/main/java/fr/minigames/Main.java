@@ -1,5 +1,7 @@
 package fr.minigames;
 
+import fr.minigames.commands.HubCommand;
+import fr.minigames.games.manhunt.ManhuntCommand;
 import fr.minigames.commands.MenuCommand;
 import fr.minigames.listeners.MenuListener;
 import fr.minigames.managers.GameManager;
@@ -14,14 +16,22 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        // 1. Initialiser le Manager
+        // Initialiser le Manager
         this.gameManager = new GameManager();
 
-        // 2. Enregistrer la commande /menu
+        // Enregistrer la commande /menu
         getCommand("menu").setExecutor(new MenuCommand());
 
-        // 3. Enregistrer les événements (les clics)
+        //Enregistrer les événements (les clics)
         getServer().getPluginManager().registerEvents(new MenuListener(), this);
+
+        // Enregistrer la commande /manhunt
+        ManhuntCommand manhuntCmd = new ManhuntCommand();
+        getCommand("manhunt").setExecutor(manhuntCmd);
+        getServer().getPluginManager().registerEvents(manhuntCmd, this); // Important pour les clics !
+
+        // Enregistrer le /hub
+        getCommand("hub").setExecutor(new HubCommand());
 
         getLogger().info("Le plugin MiniGames est activé !");
     }

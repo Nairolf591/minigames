@@ -10,3 +10,9 @@ commands:
     description: Ouvre le menu de sélection des jeux
     usage: /menu
     aliases: [m, jeux]
+  manhunt_config:
+    description: Configurer le manhunt
+    usage: /manhunt_config
+  hub:
+    description: Quitter la partie
+    usage: /hub

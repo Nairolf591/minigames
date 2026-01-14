@@ -1,7 +1,7 @@
 package fr.minigames.listeners;
 
 import fr.minigames.Main;
-import fr.minigames.manhunt.ManhuntGame;
+import fr.minigames.games.manhunt.ManhuntGame;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

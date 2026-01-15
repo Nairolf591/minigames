@@ -32,22 +32,22 @@ public class ManhuntCommand implements CommandExecutor, Listener {
         if (!(sender instanceof Player)) return false;
         Player player = (Player) sender;
 
-        // Vérifier si on est bien dans un Manhunt
         MiniGame currentGame = Main.getInstance().getGameManager().getCurrentGame();
         if (!(currentGame instanceof ManhuntGame)) {
             player.sendMessage("§cAucun Manhunt n'est lancé !");
             return true;
         }
 
-        if (args.length > 0 && args[0].equalsIgnoreCase("config")) {
-            if (!player.isOp()) {
-                player.sendMessage("§cRéservé aux admins.");
-                return true;
-            }
-            openConfigGUI(player, (ManhuntGame) currentGame);
+        // On ouvre directement le menu si c'est un OP
+        if (!player.isOp()) {
+            player.sendMessage("§cRéservé aux admins.");
+            return true;
         }
+
+        openConfigGUI(player, (ManhuntGame) currentGame);
         return true;
     }
+
 
     private void openConfigGUI(Player player, ManhuntGame game) {
         Inventory gui = Bukkit.createInventory(null, 27, "§8Config Manhunt");

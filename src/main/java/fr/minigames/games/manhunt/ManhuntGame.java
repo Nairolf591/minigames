@@ -43,11 +43,23 @@ public class ManhuntGame extends MiniGame {
 
     @Override
     public void addPlayer(Player player) {
-        super.addPlayer(player);
-        // TP au Lobby (0, 100, 0 pour l'instant)
-        player.teleport(new Location(player.getWorld(), 0, 100, 0));
+        // On vérifie si le joueur est déjà dedans avant d'ajouter (sécurité)
+        if (players.contains(player)) {
+            player.sendMessage("§cTu es déjà dans ce lobby !");
+            return;
+        }
+
+        super.addPlayer(player); // Ajoute à la liste et envoie le message de base
+
+        // Téléportation et Clear
+        player.teleport(new Location(player.getWorld(), 0.5, 100, 0.5)); // .5 pour être au centre du bloc
         player.getInventory().clear();
-        player.sendMessage("§aBienvenue dans le Lobby ! §7/manhunt_config §apour régler la partie.");
+
+        // Message à TOUS les joueurs DE LA PARTIE (pas tout le serveur)
+        String joinMsg = "§7[§a+§7] §f" + player.getName() + " §7a rejoint le Manhunt (§e" + players.size() + "§7)";
+        for (Player p : players) {
+            p.sendMessage(joinMsg);
+        }
     }
 
     // --- LOGIQUE DU DÉMARRAGE ---

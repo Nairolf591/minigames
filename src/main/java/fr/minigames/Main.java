@@ -27,7 +27,7 @@ public class Main extends JavaPlugin {
 
         // Enregistrer la commande /manhunt
         ManhuntCommand manhuntCmd = new ManhuntCommand();
-        getCommand("manhunt").setExecutor(manhuntCmd);
+        getCommand("manhunt_config").setExecutor(manhuntCmd);
         getServer().getPluginManager().registerEvents(manhuntCmd, this); // Important pour les clics !
 
         // Enregistrer le /hub

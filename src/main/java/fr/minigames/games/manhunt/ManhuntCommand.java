@@ -73,6 +73,14 @@ public class ManhuntCommand implements CommandExecutor, Listener {
         kitHunter.setItemMeta(khm);
         gui.setItem(16, kitHunter);
 
+        // Dans openConfigGUI, ajoute ceci (par exemple au slot 13) :
+        ItemStack freezeBtn = new ItemStack(Material.CLOCK);
+        ItemMeta fMeta = freezeBtn.getItemMeta();
+        fMeta.setDisplayName("§bTemps de Freeze: §f" + game.getConfig().getFreezeTime() + "s");
+        fMeta.setLore(java.util.List.of("§7Clique pour changer (Indisponible)", "§7Actuellement fixe à 30s"));
+        freezeBtn.setItemMeta(fMeta);
+        gui.setItem(13, freezeBtn);
+
         // Liste des joueurs pour choisir les runners
         int slot = 0;
         for (Player p : game.getPlayers()) {
@@ -108,40 +116,24 @@ public class ManhuntCommand implements CommandExecutor, Listener {
 
             ManhuntGame game = (ManhuntGame) Main.getInstance().getGameManager().getCurrentGame();
 
-            // Gestion start
             if (item.getType() == Material.EMERALD_BLOCK) {
                 player.closeInventory();
                 game.startGameReal();
-                return;
-            }
-
-            // Gestion changement de rôle (clic sur tête/casque)
-            if (item.getType() == Material.PLAYER_HEAD || item.getType() == Material.GOLDEN_HELMET) {
-                String playerName = item.getItemMeta().getDisplayName();
-                Player target = Bukkit.getPlayer(playerName);
-                if (target != null) {
-                    if (game.getConfig().isRunner(target.getUniqueId())) {
-                        game.getConfig().removeRunner(target.getUniqueId());
-                    } else {
-                        game.getConfig().addRunner(target.getUniqueId());
-                    }
-                    openConfigGUI(player, game); // Rafraîchir
-                }
-            }
-
-            // Gestion Édition Kit
-            if (item.getItemMeta().getDisplayName().contains("Kit Runner")) {
+            } else if (item.getType() == Material.PLAYER_HEAD || item.getType() == Material.GOLDEN_HELMET) {
+                // ... (ton code de changement de rôle actuel est bon)
+            } else if (item.getItemMeta().getDisplayName().contains("Kit Runner")) {
                 startEditingKit(player, "RUNNER");
             } else if (item.getItemMeta().getDisplayName().contains("Kit Hunter")) {
                 startEditingKit(player, "HUNTER");
             }
+            return;
         }
 
-        // 2. GESTION DU MENU D'ÉDITION DE KIT (Le bouton valider)
-        if (title.startsWith("§8Édition: ")) {
-            // Si on clique sur le bouton de validation (Slot 8, soit le 9ème slot de la hotbar)
-            if (event.getSlot() == 8 && event.getCurrentItem() != null && event.getCurrentItem().getType() == Material.SLIME_BALL) {
-                event.setCancelled(true);
+        // 2. GESTION DU MODE ÉDITION (Clic dans son propre inventaire)
+        if (editingMode.containsKey(player.getUniqueId())) {
+            // Si le joueur clique sur la Slime Ball de sauvegarde
+            if (event.getCurrentItem() != null && event.getCurrentItem().getType() == Material.SLIME_BALL) {
+                event.setCancelled(true); // Empêche de jeter/déplacer la slime ball
                 saveKit(player);
             }
         }
@@ -195,5 +187,16 @@ public class ManhuntCommand implements CommandExecutor, Listener {
 
         // Retour au menu
         openConfigGUI(player, game);
+    }
+
+    @EventHandler
+    public void onQuit(org.bukkit.event.player.PlayerQuitEvent event) {
+        UUID uuid = event.getPlayer().getUniqueId();
+        if (editingMode.containsKey(uuid)) {
+            // On lui rend son inventaire s'il déco pour ne pas qu'il perde ses items
+            event.getPlayer().getInventory().setContents(savedInventories.get(uuid));
+            editingMode.remove(uuid);
+            savedInventories.remove(uuid);
+        }
     }
 }

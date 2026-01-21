@@ -31,4 +31,14 @@ public class ManhuntConfig {
 
     public int getFreezeTime() { return freezeTime; }
     public void setFreezeTime(int time) { this.freezeTime = time; }
+
+    public void addFreezeTime(int seconds) {
+        this.freezeTime += seconds;
+        if (this.freezeTime > 300) this.freezeTime = 300; // Max 5 minutes
+    }
+
+    public void removeFreezeTime(int seconds) {
+        this.freezeTime -= seconds;
+        if (this.freezeTime < 0) this.freezeTime = 0; // Pas de temps négatif
+    }
 }

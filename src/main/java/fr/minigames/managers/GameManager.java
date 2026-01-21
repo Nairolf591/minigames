@@ -33,4 +33,11 @@ public class GameManager {
             player.sendMessage("§cAucun jeu n'est lancé pour le moment !");
         }
     }
+
+    public void stopGame() {
+        if (this.currentGame != null) {
+            this.currentGame.onStop();
+            this.currentGame = null; // Important : on remet à zéro pour dire "aucun jeu en cours"
+        }
+    }
 }
